@@ -4,7 +4,6 @@ server:
     context-path: /home-security-service
 spring:
   datasource:
-    driverClassName: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/springsecurity
     username: root
     password: HclIndia@1202

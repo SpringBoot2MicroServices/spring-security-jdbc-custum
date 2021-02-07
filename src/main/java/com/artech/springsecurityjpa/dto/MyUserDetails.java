@@ -1,32 +1,44 @@
-package dto;
+package com.artech.springsecurityjpa.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import com.artech.springsecurityjpa.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MyUserDetails implements UserDetails {
 
     private String userName;
+    private String password;
+    private Boolean active;
+    private List<GrantedAuthority> authorities;
 
-    public MyUserDetails(String userName){
-        this.userName = userName;
+
+    public MyUserDetails(User user){
+
+        this.userName = user.getUserName();
+        this.password = user.getPassword();
+        this.active = user.getActive();
+
+        this.authorities = Arrays.stream(user.getRoles().split(","))
+                     .map(SimpleGrantedAuthority::new)
+                     .collect(Collectors.toList());
     }
     MyUserDetails(){
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        return authorities;
     }
 
     @Override
     public String getPassword() {
-        return "my_password";
+        return password;
     }
 
     @Override
@@ -51,6 +63,6 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return active;
     }
 }
